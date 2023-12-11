@@ -1,63 +1,51 @@
+#include <Servo.h>
+#include <Adafruit_NeoPixel.h>
 
-#include <Wire.h>
-#include <SPI.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BME280.h>
+#define LED_PIN 6
+#define NUM_LEDS 30 // Modify based on the number of LEDs on your LED strip
 
-
-Adafruit_BME280 bme; // I2C
-//Adafruit_BME280 bme(BME_CS); // hardware SPI
-//Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK); // software SPI
-
-unsigned long delayTime;
+Servo myservo;  // Create a servo object
+Adafruit_NeoPixel strip(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println(F("BME280 test"));
+  myservo.attach(9);  // Connect the servo signal line to digital pin 9
+  strip.begin();      // Initialize the LED strip
+  strip.show();       // Ensure all LEDs are turned off
+}
 
-  bool status;
-  
-  // default settings
-  // (you can also pass in a Wire library object like &Wire2)
-  status = bme.begin();  
-  if (!status) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
-    while (1);
+void loop() {
+  // Clockwise rotation
+  myservo.write(180);  // Writing a value higher than 90 usually makes the servo rotate clockwise
+  delay(1000);  // Adjust the delay time based on the actual rotation speed of the servo
+
+  // Turn on the LEDs
+  for (int i = 0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, strip.Color(255, 255, 255)); // Set to white
   }
-  
-  Serial.println("-- Default Test --");
-  delayTime = 1000;
+  strip.show();
+  delay(1000);  // Delay for 10 seconds
 
-  Serial.println();
-}
+  // Stop rotation
+  myservo.write(90);  // Writing 90 usually stops the servo rotation
+  delay(1000);  // Delay for 1 second
 
+  // Delay for 10 seconds, then repeat the loop
+  delay(10000);
 
-void loop() { 
-  printValues();
-  delay(delayTime);
-}
+  // Counterclockwise rotation
+  myservo.write(0);  // Writing a value lower than 90 usually makes the servo rotate counterclockwise
+  delay(1000);  // Similarly, adjust the delay time based on the actual rotation speed of the servo
 
+  // Stop rotation
+  myservo.write(90);  // Stop rotation
+  delay(1000);  // Delay for 1 second
 
-void printValues() {
-  Serial.print("Temperature = ");
-  Serial.print(bme.readTemperature());
-  Serial.println(" *C");
-  
-  // Convert temperature to Fahrenheit
-  /*Serial.print("Temperature = ");
-  Serial.print(1.8 * bme.readTemperature() + 32);
-  Serial.println(" *F");*/
-  
-  Serial.print("Pressure = ");
-  Serial.print(bme.readPressure() / 100.0F);
-  Serial.println(" hPa");
-  
-  Serial.print("Approx. Altitude = ");
-  Serial.println(" m");
-  
-  Serial.print("Humidity = ");
-  Serial.print(bme.readHumidity());
-  Serial.println(" %");
-  
-  Serial.println();
+  // Turn off the LEDs
+  for (int i = 0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 0)); // Turn off the LEDs
+  }
+  strip.show();
+
+  // Delay for 10 seconds, then repeat the loop
+  delay(10000);
 }
