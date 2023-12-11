@@ -46,9 +46,4 @@ Feel free to modify the code to suit your specific hardware configuration and de
 ## License
 
 This code is provided under the [MIT License](LICENSE).
-## Authors
-
-- [Yahan Xie](link-to-profile): Documentation, idea impress, User Interacting 
-- [Yuanhao Li](link-to-profile): Filming, 3D Modelling, Blending
-- [Shunxi Wi](link-to-profile): Coding, Making Prototype
 
